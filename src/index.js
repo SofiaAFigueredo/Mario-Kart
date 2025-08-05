@@ -25,8 +25,8 @@ async function randomNumber() {
 
 // Random terrain for challeng 
 async function randomTerrain() {
-    const random = Math.random()
-    const terrain
+    let random = Math.random()
+    let terrain
 
     switch (true) {
         case random < 0.33:
@@ -46,14 +46,143 @@ async function randomTerrain() {
 
 // Function of all functions of the game
 async function gameEngineering(player1, player2) {
+    for (let round = 1; round <= 5; round ++){
+        console.log(`\n➡️  Round ${round}`);
     
+        let terrain = await randomTerrain();
+        console.log(`Terrain: ${terrain} ⛰️`);
+
+        let number1 = await randomNumber();
+        let number2 = await randomNumber();
+
+        totalSkill1 = 0;
+        totalSkill2 = 0;
+        
+        if (terrain === "STRAIGHT"){
+            totalSkill1 = number1 + player1.SPEED
+            totalSkill2 = number2 + player2.SPEED
+
+            await showResults(
+                player1.NAME,
+                number1,
+                "STRAIGHT",
+                player1.SPEED
+            )
+
+            await showResults(
+                player2.NAME,
+                number2,
+                "STRAIGHT",
+                player2.SPEED
+            )
+
+            if (totalSkill1 > totalSkill2){
+                console.log(`The ${player1.NAME} win one point 🏎️ !`)
+                player1.POINTS ++;
+            }
+            else if (totalSkill2 > totalSkill1){
+                console.log(`The ${player2.NAME} win one point 🏎️ !`)
+                player2.POINTS ++;
+            }
+            else{
+                console.log("The players had the same amount of points. Nobody won 🍌!")
+            }
+        }
+
+        if (terrain === "CURVE"){
+            totalSkill1 = number1 + player1.MANEUVERABILITY
+            totalSkill2 = number2 + player2.MANEUVERABILITY
+
+            await showResults(
+                player1.NAME,
+                number1,
+                "CURVE",
+                player1.MANEUVERABILITY
+            )
+
+            await showResults(
+                player2.NAME,
+                number2,
+                "CURVE",
+                player2.MANEUVERABILITY
+            )
+
+            if (totalSkill1 > totalSkill2){
+                console.log(`The ${player1.NAME} win one point 🏎️ !`)
+                player1.POINTS ++;
+            }
+            else if (totalSkill2 > totalSkill1){
+                console.log(`The ${player2.NAME} win one point 🏎️ !`)
+                player2.POINTS ++;
+            }
+            else{
+                console.log("The players had the same amount of points. Nobody won 🍌!")
+            }
+        }
+
+        if (terrain === "CONFRONTATION"){
+            totalSkill1 = number1 + player1.POWER
+            totalSkill2 = number2 + player2.POWER
+
+            await showResults(
+                player1.NAME,
+                number1,
+                "CONFRONTATION",
+                player1.POWER
+            )
+
+            await showResults(
+                player2.NAME,
+                number2,
+                "CONFRONTATION",
+                player2.POWER
+            )
+
+            if (totalSkill1 > totalSkill2){
+                console.log(`The ${player1.NAME} win! ${player2.NAME} lose one point 🏎️ !`)
+                if (player2.POINTS > 0){
+                    player2.POINTS --;
+                }
+            }
+            else if (totalSkill2 > totalSkill1){
+                console.log(`The ${player2.NAME} win! ${player1.NAME} lose one point 🏎️ !`)
+                if (player1.POINTS > 0){
+                    player1.POINTS --;
+                }
+            }
+            else{
+                console.log("The players had the same amount of points. Nobody won 🍌!")
+            }
+        }
+    }
 }
 
+async function showResults(playerName, number, terrain, skill) {
+    console.log(`${playerName} launched a value die ${terrain} ${number} + ${skill} = ${number + skill}`);
+}
 
+//Show the player who won the game
+async function winner(player1, player2) {
+    console.log(`\n 🏁🚨 Result:`)
+
+    console.log(`Points ${player1.NAME}: ${player1.POINTS} points.`)
+    console.log(`Points ${player2.NAME}: ${player2.POINTS} points.`)
+
+    if (player1.POINTS > player2.POINTS){
+        console.log(`The winner is ${player1.NAME}! 🏆`)
+    }
+    else if (player2.POINTS > player1.POINTS){
+        console.log(`The winner is ${player2.NAME}! 🏆`)
+    }
+    else {
+        console.log("The players had the same amount of points. No one win! 🌪️")
+    }
+}
 
 // Organize the order of functions and their impressions
 (async function main() {
     console.log(`🏁🚨 The race between ${player1.NAME} and ${player2.NAME} is starting...`);
 
     await gameEngineering(player1,player2);
+    await winner(player1,player2);
 })()
