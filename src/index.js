@@ -1,20 +1,102 @@
 // Game code Mario Kart
 
-// Players
-const player1 = {
-    NAME: "Mario",
-    SPEED: 4,
-    MANEUVERABILITY: 3,
-    POWER: 3,
-    POINTS: 0
+const readline = require('readline')
+
+// Input for the choice of players
+function input(prompt){
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    return new Promise(resolve => {
+        rl.question(prompt, answer => {
+            rl.close();
+            resolve(answer);
+        });
+    });
 }
 
-const player2 = {
-    NAME: "Luigi",
-    SPEED: 3,
-    MANEUVERABILITY: 4,
-    POWER: 4,
-    POINTS: 0
+// Players
+const players = [
+    {
+        NAME: "Mario",
+        SPEED: 4,
+        MANEUVERABILITY: 3,
+        POWER: 3,
+        POINTS: 0
+    },
+    {
+        NAME: "Luigi",
+        SPEED: 3,
+        MANEUVERABILITY: 4,
+        POWER: 4,
+        POINTS: 0    
+    },
+    {
+        NAME: "Peach",
+        SPEED: 3,
+        MANEUVERABILITY: 4,
+        POWER: 2,
+        POINTS: 0
+    },
+    {
+        NAME: "Bowser",
+        SPEED: 5,
+        MANEUVERABILITY: 2,
+        POWER: 5,
+        POINTS: 0
+    },
+    {
+        NAME: "Yoshi",
+        SPEED: 2,
+        MANEUVERABILITY: 4,
+        POWER: 3,
+        POINTS: 0
+    },
+    {
+        NAME: "Donkey Kong",
+        SPEED: 2,
+        MANEUVERABILITY: 2,
+        POWER: 5,
+        POINTS: 0
+    }
+];
+// Choose the player you want to play
+async function choosePlayers() {
+    console.log("Available players: ");
+    players.forEach((player, index) => {
+        console.log(`${index + 1}. ${player.NAME}`);
+    });
+
+    // Chosse the fist player
+    let player1Index = -1;
+    while (player1Index < 0 || player1Index >= players.length || isNaN(player1Index)){
+        const input1 = await input("Enter the number of the first player: ");
+        player1Index = parseInt(input1) - 1;
+        
+        if (player1Index < 0 || player1Index >= players.length || isNaN(player1Index)){
+            console.log("choose invalid, try again with a valid value");
+        }
+    }
+
+    // Chosse the second player
+    let player2Index = -1;
+    while (player2Index < 0 || player2Index >= players.length || isNaN(player2Index)){
+        const input2 = await input("Enter the number of the second player: ");
+        player2Index = parseInt(input2) - 1;
+
+        if (player2Index < 0 || player2Index >= players.length || isNaN(player2Index)){
+            console.log("choose invalid, try again with a valid value");
+        } 
+        while (player1Index === player2Index){
+            console.log("You can't choose the same player as the first. Try again.");
+            const input2 = await input("Enter the number of the second player: ");
+            player2Index = parseInt(input2) - 1;
+        }
+    }
+
+    return [players[player1Index], players[player2Index]];
 }
 
 // Random number for player ability
@@ -181,8 +263,10 @@ async function winner(player1, player2) {
 
 // Organize the order of functions and their impressions
 (async function main() {
-    console.log(`🏁🚨 The race between ${player1.NAME} and ${player2.NAME} is starting...`);
+    const [selectedPlayer1, selectedPlayer2] = await choosePlayers();
 
-    await gameEngineering(player1,player2);
-    await winner(player1,player2);
+    console.log(`\n🏁🚨 The race between ${selectedPlayer1.NAME} and ${selectedPlayer2.NAME} is starting...`);
+
+    await gameEngineering(selectedPlayer1, selectedPlayer2);
+    await winner(selectedPlayer1, selectedPlayer2);
 })()
