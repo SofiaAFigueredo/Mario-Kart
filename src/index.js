@@ -245,7 +245,7 @@ async function showResults(playerName, number, terrain, skill) {
 
 //Show the player who won the game
 async function winner(player1, player2) {
-    console.log(`\n 🏁🚨 Result:`)
+    console.log(`\n🏁🚨 Result:`)
 
     console.log(`Points ${player1.NAME}: ${player1.POINTS} points.`)
     console.log(`Points ${player2.NAME}: ${player2.POINTS} points.`)
